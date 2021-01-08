@@ -1,3 +1,6 @@
+---
+title: "Personal Website"
+---
 
 ```{r setup, echo=F, include=FALSE, results = FALSE,message=FALSE,error=FALSE}
 library(tsna)
@@ -6,7 +9,7 @@ library(igraph)
 library(dplyr)
 
 # load dyadic data
-load("/Users/simon/Documents/repo/animation-website/dyadicdat.RData")
+load("/Volumes/Transcend/Uni/Zivi Eawag/Script/Konkordats/ModelInput/dyadicdat.RData")
 
 dyadicdat$date <- as.Date(dyadicdat$time, origin = "1970-01-01")
 
