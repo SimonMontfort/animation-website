@@ -2,4 +2,4 @@
 title: "About Me"
 ---
 
-Why I am awesome. 
+This is a simple website to provide supplementary materials for the analysis of Swiss water agreement design principles in an accessible and understandable way.
