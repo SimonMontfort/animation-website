@@ -1,8 +1,8 @@
 ---
-title: "Personal Website"
+title: "Supplementary Materials"
 ---
 
-```{r setup, echo=F, include=FALSE, results = FALSE, message=FALSE, error=FALSE}
+```{r setup, echo=F, include=FALSE, results = FALSE, message=FALSE, error=FALSE, results = "hide"}
 library(tsna)
 library(ndtv) # also loads animation and networkDynamic
 library(igraph)
@@ -64,7 +64,7 @@ no_mech_list <- from_dyadic_to_net(dyadicdat[dyadicdat$commission == 0 & dyadicd
 
 Animation:
 
-```{r pressure, echo = FALSE, tidy = FALSE, message = FALSE, error = FALSE}
+```{r pressure, echo = FALSE, tidy = FALSE, message = FALSE, error = FALSE, results = "hide"}
 
 dyn <- networkDynamic(network.list = lst,  
                       vertex.TEA.names = TRUE,
