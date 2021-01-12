@@ -61,18 +61,14 @@ no_mech_list <- from_dyadic_to_net(dyadicdat[dyadicdat$commission == 0 & dyadicd
 ```
 
 ## Plot Animation
-
-Animation:
-
-```{r pressure, echo = FALSE, tidy = FALSE, message = FALSE, error = FALSE, results = "hide"}
-
+```{r, include = FALSE}
 dyn <- networkDynamic(network.list = lst,  
                       vertex.TEA.names = TRUE,
                       create.TEAs = TRUE, 
                       edge.TEA.names = c('weight','type'))
+```
 
-# get.edge.attribute.active(dyn, 'weight', at=2)
-
+```{r pressure, echo = FALSE, tidy = FALSE, message = FALSE, error = FALSE, results=-1}
 render.d3movie(dyn, 
                displaylabels = TRUE,
                edge.lwd = 'weight',
