@@ -2,7 +2,7 @@
 title: "Personal Website"
 ---
 
-```{r setup, echo=F, include=FALSE, results = FALSE,message=FALSE,error=FALSE}
+```{r setup, echo=F, include=FALSE, results = FALSE, message=FALSE, error=FALSE}
 library(tsna)
 library(ndtv) # also loads animation and networkDynamic
 library(igraph)
@@ -11,8 +11,10 @@ library(dplyr)
 # load dyadic data
 load("/Users/simon/Documents/repo/animation-website/dyadicdat.RData")
 
+# date from numeric
 dyadicdat$date <- as.Date(dyadicdat$time, origin = "1970-01-01")
 
+# restructure data 
 dyadicdat <- dyadicdat %>% arrange(date)
 dyadicdat$canton1 <- as.factor(dyadicdat$canton1)
 dyadicdat$canton2 <- as.factor(dyadicdat$canton2)
@@ -22,27 +24,39 @@ library(forcats) # understand why changing levels changes values of factors, too
 dyadicdat$canton1 <- fct_expand(dyadicdat$canton1, levels = sort(unique(c(as.character(dyadicdat$canton1), as.character(dyadicdat$canton2)))))
 dyadicdat$canton2 <- fct_expand(dyadicdat$canton2, levels = sort(unique(c(as.character(dyadicdat$canton1), as.character(dyadicdat$canton2)))))
 
+# subset to bilaterals
 dyadicdat <- dyadicdat %>% filter(bilateral == 1)
-  
-lst <- list()
 
-for (i in as.character(unique(dyadicdat$date))){
- temp_mat1 <- as.matrix(table(dyadicdat$canton1[dyadicdat$date <= i], dyadicdat$ID_SM[dyadicdat$date <= i]))
- temp_mat2 <- as.matrix(table(dyadicdat$canton2[dyadicdat$date <= i], dyadicdat$ID_SM[dyadicdat$date <= i]))
- temp_mat1 <- temp_mat1[sort(rownames(temp_mat1)), sort(colnames(temp_mat1))]
- temp_mat2 <- temp_mat2[sort(rownames(temp_mat2)), sort(colnames(temp_mat2))]
- temp_mat <- temp_mat1 + temp_mat2
- lst[[i]] <- temp_mat %*% t(temp_mat)
- diag(lst[[i]]) <- 0
- lst[[i]] <- as.network(lst[[i]], 
+# quickly look no of mechansims per agreement
+rowSums(cbind(dyadicdat$commission, dyadicdat$monitoring, dyadicdat$conflict))
+  
+# function to transform from dyadic data to network panels for each time stamp
+from_dyadic_to_net <- function(dyadicdat){
+  lst <- list()
+  for (i in as.character(unique(dyadicdat$date))){
+  temp_mat1 <- as.matrix(table(dyadicdat$canton1[dyadicdat$date <= i], dyadicdat$ID_SM[dyadicdat$date <= i]))
+  temp_mat2 <- as.matrix(table(dyadicdat$canton2[dyadicdat$date <= i], dyadicdat$ID_SM[dyadicdat$date <= i]))
+  temp_mat1 <- temp_mat1[sort(rownames(temp_mat1)), sort(colnames(temp_mat1))]
+  temp_mat2 <- temp_mat2[sort(rownames(temp_mat2)), sort(colnames(temp_mat2))]
+  temp_mat <- temp_mat1 + temp_mat2
+  lst[[i]] <- temp_mat %*% t(temp_mat)
+  diag(lst[[i]]) <- 0
+  lst[[i]] <- as.network(lst[[i]], 
                         vertex.attrnames = rownames(lst[[i]]),
                         directed = F,
                         ignore.eval = F,
-                        names.eval='weight')
+                        names.eval = 'weight')
+  }
+  return(lst)
 }
 
-summary( lst[[i]])
+lst <- from_dyadic_to_net(dyadicdat)
 
+# create separate datasets for each mechanism and for those agreements without mechanism
+com_list <- from_dyadic_to_net(dyadicdat[dyadicdat$commission == 1,])
+mon_list <- from_dyadic_to_net(dyadicdat[dyadicdat$monitoring == 1,])
+con_list <- from_dyadic_to_net(dyadicdat[dyadicdat$conflict == 1,])
+no_mech_list <- from_dyadic_to_net(dyadicdat[dyadicdat$commission == 0 & dyadicdat$monitoring == 0 & dyadicdat$conflict == 0,])
 
 ```
 
@@ -50,25 +64,26 @@ summary( lst[[i]])
 
 Animation:
 
-```{r pressure, echo=FALSE, tidy = FALSE, message=FALSE,error=FALSE}
-dyn <- networkDynamic(network.list = lst, 
-                      vertex.TEA.names=TRUE,
-                      create.TEAs=TRUE, 
-                      edge.TEA.names=c('weight','type'))
+```{r pressure, echo = FALSE, tidy = FALSE, message = FALSE, error = FALSE}
 
-get.edge.attribute.active(dyn,'weight',at=2)
+dyn <- networkDynamic(network.list = lst,  
+                      vertex.TEA.names = TRUE,
+                      create.TEAs = TRUE, 
+                      edge.TEA.names = c('weight','type'))
+
+# get.edge.attribute.active(dyn, 'weight', at=2)
 
 render.d3movie(dyn, 
-               displaylabels=TRUE,
-               edge.lwd='weight',
+               displaylabels = TRUE,
+               edge.lwd = 'weight',
                output.mode = 'htmlWidget')
 
 timeline(dyn)
 
 proximity.timeline(dyn, 
-                   default.dist=6,
-                   mode='sammon',
-                   labels.at=17,
-                   vertex.cex=4)
+                   default.dist = 6,
+                   mode = 'sammon',
+                   labels.at = 17,
+                   vertex.cex = 4)
 
 ```
