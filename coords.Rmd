@@ -1,0 +1,103 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup}
+library(tsna)
+library(ndtv) # also loads animation and networkDynamic
+library(igraph)
+library(dplyr)
+
+# load dyadic data
+load("/Users/simon/Documents/repo/animation-website/dyadicdat.RData")
+load("/Volumes/Transcend/Uni/Zivi Eawag/Script/Model/ModelInput/cant_centroids.RData")
+
+cant_centroids <- as.data.frame(cant_centroids_2)
+cant_centroids$vertex.id <- 1:nrow(cant_centroids)
+cant_centroids$x <- cant_centroids$X
+cant_centroids$y <- cant_centroids$Y
+cant_centroids <- cant_centroids[ ,-c(2:3)]
+
+# date from numeric
+dyadicdat$date <- as.Date(dyadicdat$time, origin = "1970-01-01")
+
+# restructure data
+dyadicdat <- dyadicdat %>% arrange(date)
+dyadicdat$canton1 <- as.factor(dyadicdat$canton1)
+dyadicdat$canton2 <- as.factor(dyadicdat$canton2)
+dyadicdat$ID_SM <- as.factor(dyadicdat$ID_SM)
+
+cants <- levels(dyadicdat$canton2)
+
+# subset to bilaterals
+dyadicdat <- dyadicdat %>%
+  filter(bilateral == 1) %>%
+  mutate(cant1 = canton1,
+         cant2 = canton2)
+
+dyadicdat$cant1 <- factor(dyadicdat$cant1, levels = sort(cants)) 
+dyadicdat$cant2 <- factor(dyadicdat$cant2, levels = sort(cants)) 
+
+dyadicdat$canton1 <- as.numeric(dyadicdat$cant1)
+dyadicdat$canton2 <- as.numeric(dyadicdat$cant2)
+
+nw <- list()
+for (i in as.character(unique(dyadicdat$date))){
+  nw[[i]] <- network(dyadicdat[dyadicdat$date <= i,],
+                     vertex.attr = cant_centroids,
+                     # vertex.attrnames = c("x", "y"), 
+                     matrix.type = "edgelist",
+                     directed = F,
+                     # ignore.eval = F,
+                     names.eval = 'weight'
+                     )
+}
+
+cbind(network::get.vertex.attribute(nw[[i]], "x"), network::get.vertex.attribute(nw[[i]], "y"))
+
+dyn <- networkDynamic(network.list = nw,
+                      vertex.pid = "vertex.names",
+                      # vertex.TEA.names = TRUE,
+                      create.TEAs = TRUE,
+                      edge.TEA.names = c('weight')
+                      )
+
+network::set.vertex.attribute(dyn, "x", as.numeric(cant_centroids[, 3])) 
+network::set.vertex.attribute(dyn, "y", as.numeric(cant_centroids[, 4])) 
+
+cbind(network::get.vertex.attribute(dyn, "x"), network::get.vertex.attribute(dyn, "y"))
+
+network.vertex.names(dyn)
+dyn2 <- dyn
+dyn2%v%'vertex.names'<- cants
+
+staticCoords <- network.layout.animate.useAttribute(dyn2, layout.par = list(x = "x", y = "y"), verbose = F)
+
+activate.vertex.attribute(dyn2, 'x', staticCoords[,1], onset=-Inf, terminus=Inf)
+activate.vertex.attribute(dyn2, 'y', staticCoords[,2], onset=-Inf, terminus=Inf)
+
+cbind(network::get.vertex.attribute(dyn2, "x"), network::get.vertex.attribute(dyn2, "y"))
+
+
+compute.animation(dyn2,
+                  animation.mode = 'useAttribute',
+                  edge.lwd = 'weight')
+
+saveVideo(render.animation(dyn2, 
+                           render.cache='none',
+                           main='Graphviz-neato layout'),
+          video.name='gv_neato_layout.mp4')
+
+# to solve issue with edge weights, look at data structure in here and set up accordingly: 
+# rawEdges<-read.table(paste(path.package('networkDynamic'),
+# +   "/extdata/cls33_10_16_96_edges.tsv",sep=''),header=TRUE,
+# +   stringsAsFactors = FALSE)
+# l. 1469 https://github.com/statnet/ndtv/blob/master/workshop/ndtv_workshop.Rmd 
+
+
+# render.d3movie(dyn,
+#                displaylabels = TRUE,
+#                # edge.lwd = 'weight',
+#                output.mode = 'htmlWidget')
+```
