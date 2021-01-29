@@ -3,7 +3,8 @@ title: "Upstream Downstream Drainage Area Example"
 output: html_document
 ---
 
+<br><br><br><br>
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = "70%", out.height="70%"}
 htmltools::includeHTML("/Users/simon/Documents/repo/animation-website_1/index_files/figure-html/example_upstream_drainage_TG_.html")
 ```

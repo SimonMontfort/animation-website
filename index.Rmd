@@ -2,6 +2,8 @@
 title: "Supplementary Materials"
 ---
 
+<br>
+
 ```{r setup, echo=F, include=FALSE, results = FALSE, message=FALSE, error=FALSE, results = "hide"}
 library(tsna)
 library(ndtv) # also loads animation and networkDynamic
@@ -83,5 +85,6 @@ proximity.timeline(dyn,
                    vertex.cex = 4)
 
 ```
+
 
 
