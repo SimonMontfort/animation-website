@@ -5,5 +5,7 @@ navbar:
   left:
     - text: "Supplementary Materials"
       href: index.html
+    - text: "Upstream Downstream Drainage Area Example"  
+      href: us-ds_ex
     - text: "About this Project"
       href: about.html

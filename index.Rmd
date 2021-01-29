@@ -9,7 +9,7 @@ library(igraph)
 library(dplyr)
 
 # load dyadic data
-load("/Users/simon/Documents/repo/animation-website/dyadicdat.RData")
+load("/Users/simon/Documents/repo/animation-website_1/dyadicdat.RData")
 
 # date from numeric
 dyadicdat$date <- as.Date(dyadicdat$time, origin = "1970-01-01")
@@ -83,3 +83,5 @@ proximity.timeline(dyn,
                    vertex.cex = 4)
 
 ```
+
+
