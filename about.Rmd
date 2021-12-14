@@ -3,5 +3,6 @@ title: "About this project"
 ---
 
 Supplementary Information to:
-Montfort, Simon A.; Fischer, Manuel; Jager, Nicolas W.; Hollway, James: Swiss Rivers Run Deep: Cross-Border Cooperation and Common Pool Resources Management among Swiss Cantons.
+<!-- Montfort, Simon A.; Fischer, Manuel; Jager, Nicolas W.; Hollway, James:  -->
+Trajectories of Institutional Design: Intergovernmental Cooperation in Federal Systems
 

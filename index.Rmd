@@ -2,7 +2,6 @@
 title: "Supplementary Materials"
 ---
 
-<br>
 
 ```{r setup, echo=F, include=FALSE, results = FALSE, message=FALSE, error=FALSE, results = "hide"}
 library(tsna)
@@ -85,6 +84,4 @@ proximity.timeline(dyn,
                    vertex.cex = 4)
 
 ```
-
-
 

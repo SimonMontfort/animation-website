@@ -1,7 +1,7 @@
-name: "swiss-water-agreement-design-website"
+name: "trajectories-of-institutional-design-website"
 output_dir: "."
 navbar:
-  title: "Swiss Water Agreement Design Principles"
+  title: "Trajectories of Institutional Design: Intergovernmental Cooperation in Federal Systems"
   left:
     - text: "Supplementary Materials"
       href: index.html

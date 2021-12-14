@@ -3,8 +3,12 @@ title: "Upstream Downstream Drainage Area Example"
 output: html_document
 ---
 
-<br><br><br><br>
+This interactive example illustrates hydrological interdependencies for the canton of Zurich in blue with updstream cantons' drainage area in other colors. 
 
-```{r, echo=FALSE, out.width = "70%", out.height="70%"}
-htmltools::includeHTML("/Users/simon/Documents/repo/animation-website_1/index_files/figure-html/example_upstream_drainage_TG_.html")
+<!-- ```{r showChoro1} -->
+<!-- shiny::includeHTML("/Users/simon/Documents/repo/animation-website_1/index_files/figure-html/example_upstream_drainage_ZH_.html") -->
+<!-- ``` -->
+
+```{r showChoro1, fig.margin=TRUE}
+shiny::includeHTML("/Users/simon/Documents/repo/animation-website_1/index_files/figure-html/example_upstream_drainage_ZH_.html")
 ```
